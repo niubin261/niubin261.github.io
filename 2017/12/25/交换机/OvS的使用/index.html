@@ -17,7 +17,7 @@
 <meta property="og:image" content="http://yoursite.com/2017/12/25/交换机/images/ovsping.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/25/交换机/images/ovsping.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/25/交换机/images/OvSQoS.png">
-<meta property="og:updated_time" content="2018-01-03T03:05:03.851Z">
+<meta property="og:updated_time" content="2018-01-04T12:52:22.529Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OvS的使用">
 <meta name="twitter:description" content="交换机OvS的CLI123//ovs-vsctl - query/update the switch configuration//ovs-ofctl - CLI for monitoring switches and adding rules//ovs-dpctl - used to monitor and query the OVS datapath 与控制器有关的操作使用1234$ ovs-">
@@ -59,7 +59,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -97,16 +97,13 @@
 <h3 id="OvS的简单使用"><a href="#OvS的简单使用" class="headerlink" title="OvS的简单使用"></a>OvS的简单使用</h3><h4 id="拓扑如下图"><a href="#拓扑如下图" class="headerlink" title="拓扑如下图"></a><strong>拓扑如下图</strong></h4><p><img src="../images/ovsping.png" alt="ping以及防火墙使用的拓扑"><br><img src="../images/ovsping.png" alt="vlan使用的拓扑图"></p>
 <h4 id="ping"><a href="#ping" class="headerlink" title="ping"></a>ping</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ ovs-ofctl add-flow br1 <span class="string">"icmp,nw_dst=10.0.0.1,action=2"</span>//匹配icmp协议并且根据目的地址执行action操作</span><br><span class="line"></span><br><span class="line">$ ovs-ofctl add-flow br1 <span class="string">"icmp,nw_dst=10.0.0.2,action=3"</span></span><br><span class="line">$ ovs-ofctl add-flow br1 <span class="string">"arp,action=NORMAL"</span>//arp自学习</span><br><span class="line">//ping的时候注意静态路由的添加</span><br><span class="line">$ route add -host 10.0.0.1 dev eth1</span><br><span class="line">//实现有状态的防火墙</span><br><span class="line">$ ovs-ofctl add-flow br1 <span class="string">"priority=60,ct_state=-trk,icmp,action=ct(commit,table=0)"</span></span><br><span class="line">$ ovs-ofctl add-flow br1 <span class="string">"priority=50,ct_state=+trk+new,icmp,nw_dst=10.0.0.2,action=3"</span></span><br><span class="line">$ ovs-ofctl add-flow br1 <span class="string">"priority=50,ct_state=+trk+new,icmp,nw_dst=10.0.0.1,action=drop"</span></span><br><span class="line">$ ovs-ofctl add-flow br1 <span class="string">"priority=50,ct_state=+trk+est,icmp,nw_dst=10.0.0.1,action=2"</span></span><br><span class="line">$ ovs-ofctl add-flow br1 <span class="string">"priority=50,ct_state=+trk+est,icmp,nw_dst=10.0.0.2,action=3"</span></span><br><span class="line">$ ovs-ofctl add-flow br1 <span class="string">"priority=20,arp,action=NORMAL"</span></span><br></pre></td></tr></table></figure>
 <h4 id="QoS的使用"><a href="#QoS的使用" class="headerlink" title="QoS的使用"></a>QoS的使用</h4><p><img src="../images/OvSQoS.png" alt="QoS"><br>限制虚拟机到主机eth的流量<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$ ovs-vsctl -- \</span><br><span class="line">  add-br br1 -- \</span><br><span class="line">  add-port br1 eth0 -- \</span><br><span class="line">  add-port br1 vif1.0 -- <span class="built_in">set</span> interface vif1.0 ofport_request=5 -- \</span><br><span class="line">  add-port br1 vif2.0 -- <span class="built_in">set</span> interface vif2.0 ofport_request=6 -- \</span><br><span class="line">  <span class="built_in">set</span> port eth0 qos=@newqos -- \</span><br><span class="line">  --id=@newqos create qos <span class="built_in">type</span>=linux-htb \</span><br><span class="line">      other-config:max-rate=1000000000 \</span><br><span class="line">      queues:123=@vif10queue \</span><br><span class="line">      queues:234=@vif20queue -- \</span><br><span class="line">  --id=@vif10queue create queue other-config:max-rate=10000000 -- \</span><br><span class="line">  --id=@vif20queue create queue other-config:max-rate=20000000</span><br><span class="line">$ ovs-ofctl add-flow br1 in_port=5,actions=set_queue:123,norma</span><br><span class="line">$ ovs-ofctl add-flow br1 in_port=5,actions=set_queue:123,norma</span><br><span class="line"></span><br><span class="line">$ ovs-vsctl -- --all destroy QoS -- --all destroy Queue</span><br></pre></td></tr></table></figure></p>
-<h4 id="vlan"><a href="#vlan" class="headerlink" title="vlan"></a>vlan</h4><p><strong>混杂模式</strong></p>
-<blockquote>
-<p>L2 数据链路层通过交换机设备进行帧转发。交换机在接收到帧之后(L2 层叫帧，L3 层叫包)先解析出帧头中的 MAC 地址，再在转发表中查找是否有对应 MAC 地址的端口，有的话就从相应端口转发出去。没有，就洪泛（专业术语，即将帧转发到交换机的所有端口），每个端口上的计算机都检查帧头中的 MAC 地址是否与本机网卡的 MAC 地址一致，一致的话就接收数据帧，不一致就直接丢弃。而转发表是通过自学习自动建立的。<br>默认情况下计算机只接收和本机 MAC 地址一致的数据帧，不一致就丢弃，如果要求计算机接受所有帧的话，就要设置网卡为混杂模式（ifconfig eth0 0.0.0.0 promisc up)。所以在虚拟网桥中，如果希望虚机和外部通讯，必须打开桥接到虚拟网桥中物理网卡的混杂模式特性。  </p>
-</blockquote>
+<h4 id="vlan"><a href="#vlan" class="headerlink" title="vlan"></a>vlan</h4><p><strong>混杂模式</strong><br>L2 数据链路层通过交换机设备进行帧转发。交换机在接收到帧之后(L2 层叫帧，L3 层叫包)先解析出帧头中的 MAC 地址，再在转发表中查找是否有对应 MAC 地址的端口，有的话就从相应端口转发出去。没有，就洪泛（专业术语，即将帧转发到交换机的所有端口），每个端口上的计算机都检查帧头中的 MAC 地址是否与本机网卡的 MAC 地址一致，一致的话就接收数据帧，不一致就直接丢弃。而转发表是通过自学习自动建立的。<br>默认情况下计算机只接收和本机 MAC 地址一致的数据帧，不一致就丢弃，如果要求计算机接受所有帧的话，就要设置网卡为混杂模式（ifconfig eth0 0.0.0.0 promisc up)。所以在虚拟网桥中，如果希望虚机和外部通讯，必须打开桥接到虚拟网桥中物理网卡的混杂模式特性。  </p>
 <p>为了防止泛洪，为交换机的每一个端口设置一个 1-4094 的数字，交换机根据 MAC 地址进行转发的同时也要结合 VLAN 号这个数字，不同的话也要丢弃。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/12/25/交换机/OvS的使用/" data-id="cjc0hp5r0000b88j3t69l75q4" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/12/25/交换机/OvS的使用/" data-id="cjc1nh8ik000b2cj3fmrcg9xa" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/交换机的使用/">交换机的使用</a></li></ul>
@@ -117,18 +114,18 @@
     
 <nav id="article-nav">
   
-    <a href="/2017/12/29/算法/回溯法/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Neuer</strong>
+    <a href="/2017/12/29/thrift的入门/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          回溯算法
+          rpc框架thrift入门
         
       </div>
     </a>
   
   
     <a href="/2017/12/16/发包工具的使用/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Älter</strong>
+      <strong class="article-nav-caption">Older</strong>
       <div class="article-nav-title">发包工具的使用</div>
     </a>
   
@@ -165,9 +162,9 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archiv</h3>
+    <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li></ul>
     </div>
   </div>
 
@@ -175,16 +172,12 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">letzter Beitrag</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
         
           <li>
             <a href="/2017/12/29/thrift的入门/">rpc框架thrift入门</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/29/算法/回溯法/">回溯算法</a>
           </li>
         
           <li>
@@ -197,6 +190,10 @@
         
           <li>
             <a href="/2017/12/13/hello-world-bin-niu/">hello world bin.niu</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/13/hello-world/">Hello World</a>
           </li>
         
       </ul>

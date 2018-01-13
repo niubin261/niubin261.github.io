@@ -14,7 +14,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/01/12/交换机/p4的编程/index.html">
 <meta property="og:site_name" content="Bin.Niu">
 <meta property="og:description" content="在本篇文章中将讲述p4编程，文章中将结合p4程序的例子介绍p4编程的规则以及流程。p4根据抽象转发模型定义的一门语言，用以表达交换机将如何被配置，数据包将如何被处理  p4编程每一个p4程序都会被分为paser,ingress,egress在parser中可以实现对数据报的解析，在ingress中可以根据定义的table转发数据，在table中需要定义的action完成转发动作，同理在egress">
-<meta property="og:updated_time" content="2018-01-13T08:58:41.245Z">
+<meta property="og:updated_time" content="2018-01-13T11:59:16.371Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="p4编程">
 <meta name="twitter:description" content="在本篇文章中将讲述p4编程，文章中将结合p4程序的例子介绍p4编程的规则以及流程。p4根据抽象转发模型定义的一门语言，用以表达交换机将如何被配置，数据包将如何被处理  p4编程每一个p4程序都会被分为paser,ingress,egress在parser中可以实现对数据报的解析，在ingress中可以根据定义的table转发数据，在table中需要定义的action完成转发动作，同理在egress">
@@ -96,18 +96,54 @@
 <h4 id="p4的语法分析"><a href="#p4的语法分析" class="headerlink" title="p4的语法分析"></a>p4的语法分析</h4><p><strong>header</strong><br>parser包含了两个部分，第一个部分是header，第二部分为parser  header代表了哪些格式的头可以使会用比如常用的ethernet,ipv4,tcp,vlan等<br>比如最简单的以太帧头为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">header_type ethernet_t &#123;</span><br><span class="line">    fields &#123;</span><br><span class="line">        dst_addr : 48;</span><br><span class="line">        src_addr : 48;</span><br><span class="line">        ether_type : 16;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>header_type类似于c中的class，需要自己定义实例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">header ethernet eth;</span><br></pre></td></tr></table></figure></p>
 <p><strong>parser</strong><br>一个parser先从start开始<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">parser start &#123;</span><br><span class="line">    return eth_parser;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>转入下一个parser中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">parser eth_parser &#123;</span><br><span class="line">    extract(eth);</span><br><span class="line">    return select(eth.ether_type) &#123;//select类似于switch</span><br><span class="line">        0x0800 : ipv4_parser;</span><br><span class="line">        default : ingress;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">```  </span><br><span class="line">**field_list**    </span><br><span class="line">通常可以使用这个实现hash值的计算以及校验和的计算</span><br></pre></td></tr></table></figure></p>
-<p>field_lsit ethchecksum_fields {<br>    eth.dst_addr;<br>    eth.src.addr;<br>    eth.eth_type;<br>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">**field_list_calculation**</span><br><span class="line">通常使用</span><br></pre></td></tr></table></figure></p>
-<p>field_list_calculation flowlet_ecmp_hash {<br>    input {<br>        flowlet_l3_hash_fields;<br>    }<br>    algorithm : crc16;<br>    output_width : ECMP_BIT_WIDTH;<br>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入为fields输出位flowlet_ecmp_hash  </span><br><span class="line">**register**</span><br><span class="line"></span><br><span class="line">**action**  </span><br><span class="line">action处理前述的parser得到的header</span><br></pre></td></tr></table></figure></p>
-<p>action fwd(parm,parm2,….) {</p>
-<p>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">最常用的action</span><br><span class="line">下面以表格的形式:  </span><br><span class="line">|    动作    | 解释 |</span><br><span class="line">| ---------- | --- |</span><br><span class="line">| modify_filed(dst,value) |更改某一个特定的值，其中 dst 可以是 header_inst.field 或是 register   |</span><br><span class="line">| add_to_filed(dst,value)       | 將 value 加到 dst 中，其中 dst 可以是 header_inst.field 或是 register，比如ttl减一dst=ipv4.ttl,value=-1  |</span><br><span class="line">|add_header(header_instane) |加入一個 Header。Header 初值都是零 |</span><br><span class="line">|drop() |egress直接丢弃 |</span><br><span class="line">|modify_field_with_hash_based_offset(dest, field_list_calc, base, size) | 有filed_list_calc计算出来的hash存储到dst中去，base产生之后new_hash = base + hash_val % size</span><br><span class="line">| meter(meter_ref, index, field) | 更新meter | </span><br><span class="line">**table**  </span><br><span class="line"></span><br><span class="line">类似于openflow  </span><br><span class="line">其定义为</span><br></pre></td></tr></table></figure></p>
-<p>table table_name {<br>    reads {<br>        field1 : match_type1 ;<br>        field2 : match_type1 ;<br>        // ….<br>    }<br>    actions {<br>        action1;<br>        action2;<br>        // …..<br>    }<br>    min_size : value;<br>    max_size : value;<br>    size : value;<br>    support_timeout : true or false;<br>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">命令行</span><br></pre></td></tr></table></figure></p>
-<p>add_entry table_name match_fields action_name action_parameters<br>```<br><strong>metadata</strong><br>//TODO<br><strong>standard meterdata</strong><br>//TODO  </p>
+<p>转入下一个parser中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">parser eth_parser &#123;</span><br><span class="line">    extract(eth);</span><br><span class="line">    return select(eth.ether_type) &#123;//select类似于switch</span><br><span class="line">        0x0800 : ipv4_parser;</span><br><span class="line">        default : ingress;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>field_list</strong><br>通常可以使用这个实现hash值的计算以及校验和的计算<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">field_lsit ethchecksum_fields &#123;</span><br><span class="line">    eth.dst_addr;</span><br><span class="line">    eth.src.addr;</span><br><span class="line">    eth.eth_type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>field_list_calculation</strong><br>通常使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">field_list_calculation flowlet_ecmp_hash &#123;</span><br><span class="line">    input &#123;</span><br><span class="line">        flowlet_l3_hash_fields;</span><br><span class="line">    &#125;</span><br><span class="line">    algorithm : crc16;</span><br><span class="line">    output_width : ECMP_BIT_WIDTH;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输入为fields输出位flowlet_ecmp_hash<br><strong>register</strong><br>针对有状态的变量存储在内存中<br><strong>action</strong><br>action处理前述的parser得到的header<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">action fwd(parm,parm2,....) &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最常用的action<br>下面以表格的形式:  </p>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th style="text-align:center">Col1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>modify_filed(dst,value)</td>
+<td style="text-align:center">更改某一个特定的值，其中 dst 可以是 header_inst.field 或是 register</td>
+</tr>
+<tr>
+<td>add_to_filed(dst,value)</td>
+<td style="text-align:center">將 value 加到 dst 中，其中 dst 可以是 header_inst.field 或是 register，比如ttl减一dst=ipv4.ttl,value=-1</td>
+</tr>
+<tr>
+<td>add_header(header_instane)</td>
+<td style="text-align:center">加入一個 Header。Header 初值都是零</td>
+</tr>
+<tr>
+<td>drop()</td>
+<td style="text-align:center">egress直接丢弃</td>
+</tr>
+<tr>
+<td>modify_field_with_hash_based_offset(dest, field_list_calc, base, size)</td>
+<td style="text-align:center">有filed_list_calc计算出来的hash存储到dst中去，base产生之后new_hash = base + hash_val % size</td>
+</tr>
+<tr>
+<td>meter(meter_ref, index, field)</td>
+<td style="text-align:center">更新meter</td>
+</tr>
+</tbody>
+</table>
+<p><strong>table</strong>  </p>
+<p>类似于openflow<br>其定义为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">table table_name &#123;</span><br><span class="line">    reads &#123;</span><br><span class="line">        field1 : match_type1 ;</span><br><span class="line">        field2 : match_type1 ;</span><br><span class="line">        // ....</span><br><span class="line">    &#125;</span><br><span class="line">    actions &#123;</span><br><span class="line">        action1;</span><br><span class="line">        action2;</span><br><span class="line">        // .....</span><br><span class="line">    &#125;</span><br><span class="line">    min_size : value;</span><br><span class="line">    max_size : value;</span><br><span class="line">    size : value;</span><br><span class="line">    support_timeout : true or false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>命令行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add_entry table_name match_fields action_name action_parameters</span><br></pre></td></tr></table></figure></p>
+<p><strong>metadata</strong><br>//TODO<br>像定义header一样定义使用，会在actions中以及control中被使用到<br><strong>standard meterdata</strong><br>//TODO  </p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/01/12/交换机/p4的编程/" data-id="cjccp0dcf000arkj3ydms7i4k" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/01/12/交换机/p4的编程/" data-id="cjcd4kzzp000d6wj3q1l37d98" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/p4交换机/">p4交换机</a></li></ul>

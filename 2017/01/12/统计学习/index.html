@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>统计学习 | Bin.Niu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="numpy的使用数组123b = a.shape//会返回数组的行数与列数,b[0]行数b = [2 5]//表示两行0列a[:,i:i+1] = b[:,i:i+1]//列直接赋值 使用123456789def test3():    a = np.array([[1.,1.1],                [1.,1],                [0.,0.],">
+<meta name="keywords" content="统计学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="统计学习">
+<meta property="og:url" content="http://yoursite.com/2017/01/12/统计学习/index.html">
+<meta property="og:site_name" content="Bin.Niu">
+<meta property="og:description" content="numpy的使用数组123b = a.shape//会返回数组的行数与列数,b[0]行数b = [2 5]//表示两行0列a[:,i:i+1] = b[:,i:i+1]//列直接赋值 使用123456789def test3():    a = np.array([[1.,1.1],                [1.,1],                [0.,0.],">
+<meta property="og:updated_time" content="2018-01-31T07:39:03.446Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="统计学习">
+<meta name="twitter:description" content="numpy的使用数组123b = a.shape//会返回数组的行数与列数,b[0]行数b = [2 5]//表示两行0列a[:,i:i+1] = b[:,i:i+1]//列直接赋值 使用123456789def test3():    a = np.array([[1.,1.1],                [1.,1],                [0.,0.],">
+  
+    <link rel="alternate" href="/atom.xml" title="Bin.Niu" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Bin.Niu</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-统计学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/12/统计学习/" class="article-date">
+  <time datetime="2017-01-12T03:00:29.000Z" itemprop="datePublished">2017-01-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      统计学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="numpy的使用"><a href="#numpy的使用" class="headerlink" title="numpy的使用"></a>numpy的使用</h2><p><strong>数组</strong><br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">b = a.shape//会返回数组的行数与列数,b[<span class="number">0</span>]行数</span><br><span class="line">b = [<span class="number">2</span> <span class="number">5</span>]//表示两行<span class="number">0</span>列</span><br><span class="line">a[:,i:i+<span class="number">1</span>] = b[:,i:i+<span class="number">1</span>]//列直接赋值</span><br></pre></td></tr></table></figure></p>
+<p><strong>使用</strong><br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test3</span><span class="params">()</span>:</span></span><br><span class="line">    a = np.array([[<span class="number">1.</span>,<span class="number">1.1</span>],</span><br><span class="line">                [<span class="number">1.</span>,<span class="number">1</span>],</span><br><span class="line">                [<span class="number">0.</span>,<span class="number">0.</span>],</span><br><span class="line">                [<span class="number">0.</span>,<span class="number">0.1</span>]])</span><br><span class="line">    x = [<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>]</span><br><span class="line">    b = np.array([[<span class="number">2</span>,<span class="number">2</span>]])</span><br><span class="line">    y = [<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">print</span> a[<span class="number">0</span>][<span class="number">0</span>]</span><br></pre></td></tr></table></figure></p>
+<p><strong>分割</strong><br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">labels = wines[:,<span class="number">0</span>:<span class="number">1</span>]//第一列</span><br><span class="line">dataSet=wines[:,<span class="number">1</span>:]//第一列除外的所有的</span><br><span class="line">np.reshape(a,(<span class="number">2</span>,<span class="number">3</span>))</span><br><span class="line">//会将a变为两行三列</span><br><span class="line">b = a.tolist()//可以将矩阵变为list，比如a为一个</span><br></pre></td></tr></table></figure></p>
+<p><strong>运算</strong><br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">diffMat = np.tile(inX,(dataSetSize,<span class="number">1</span>)) -dataSet//减,其中的函数tile将行inX扩展了<span class="number">178</span>次，列默认一次</span><br><span class="line">sqMat = diffMat**<span class="number">2</span>//平方</span><br><span class="line">sqMat.sum(axis = <span class="number">1</span>)//行求和</span><br><span class="line">sqMat.sum(axis = <span class="number">0</span>)//列求和</span><br><span class="line">a.mean(axis = <span class="number">0</span>)//按照行求和求出的结果也是n行<span class="number">0</span>列</span><br><span class="line">a.mean(axis = <span class="number">1</span>)//同上</span><br></pre></td></tr></table></figure></p>
+<p><strong>排序</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kDistanceIndex = sqDistance.argsort()//排序，是升序排列得到是一个numpy.ndarrry,是一个行4列为0的数组，(4,)即[0 1 3 2],可以作为一个list使用</span><br></pre></td></tr></table></figure></p>
+<p><strong>字典</strong><br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">classCount.get(voteLabel,<span class="number">0</span>)//得到voteLabel的值如果不存在的话将其写成<span class="number">0</span></span><br><span class="line">sortedClassCount = sorted(classCount.items(),<span class="keyword">lambda</span> x,y: cmp(x[<span class="number">1</span>],y[<span class="number">1</span>]),reverse = <span class="keyword">True</span>)//字典排序，根据value值排序，降序排列</span><br></pre></td></tr></table></figure></p>
+<p><strong>交叉验证</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X = np.arange(10).reshape((5,2))</span><br></pre></td></tr></table></figure></p>
+<p><strong>循环</strong><br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test5</span><span class="params">()</span>:</span></span><br><span class="line">    a = (<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(a)):</span><br><span class="line">        <span class="keyword">print</span> i</span><br><span class="line">结果为;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>数组的拼接</strong><br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">numpy.concatenate((a1,a2,...), axis=<span class="number">0</span>)</span><br><span class="line">//axis = <span class="number">0</span>表示沿着行拼接即最后变为[a1,a2,a3,...]</span><br><span class="line">//axis = <span class="number">1</span>表示按着列拼接[[a1],[a2],...]</span><br></pre></td></tr></table></figure></p>
+<p><strong>PolynomialFeatures</strong><br>在进行多项式回归的时候会用到多项式的计算:y=w0+w1<em>x1+w2</em>x2变为y=w0+w1<em>x1+w2</em>x2+w3<em>x1</em>x2+w4<em>x1^2+w5</em>x2^2<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ploy = PolynomialFeatures(<span class="number">2</span>)</span><br><span class="line">ploy.fit_transform(X)</span><br></pre></td></tr></table></figure></p>
+<p><strong>查看scikit-learnbanben</strong><br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sklearn</span><br><span class="line">sklearn.__veriosn__</span><br><span class="line">sudo pip install -U scikit-learn</span><br></pre></td></tr></table></figure></p>
+<p><strong>enumerate</strong><br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//函数将一个可遍历的数据对象，组合为一个索引序列</span><br><span class="line">a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</span><br><span class="line">b = enumerate(a)</span><br><span class="line">b = [(<span class="number">0</span>,<span class="number">1</span>),(<span class="number">1</span>,<span class="number">2</span>),(<span class="number">2</span>,<span class="number">3</span>),(<span class="number">3</span>,<span class="number">4</span>)]</span><br><span class="line">seq = [<span class="string">'one'</span>, <span class="string">'two'</span>, <span class="string">'three'</span>]</span><br><span class="line"><span class="keyword">for</span> i,element <span class="keyword">in</span> enumerate(seq)</span><br><span class="line">    <span class="keyword">print</span> i, seq[i]</span><br></pre></td></tr></table></figure></p>
+<p><strong>画图</strong><br><a href="https://matplotlib.org/index.html" target="_blank" rel="noopener">matplotlib教程</a><br><a href="https://bugxch.github.io/2017/08/06/matplot%E4%B9%8B3D%E7%BB%98%E5%9B%BE%E6%8C%87%E5%8D%97/" target="_blank" rel="noopener">3d绘图</a><br><a href="http://codingpy.com/article/a-quick-intro-to-matplotlib/" target="_blank" rel="noopener">2d绘图</a><br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pylot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> mpl_toolkits.mplot3d <span class="keyword">import</span> Axes3D</span><br><span class="line">//绘制<span class="number">3</span>d图形，线形图plot，散点图scatter，线框图plot_wireframe,表面plot_surface</span><br></pre></td></tr></table></figure></p>
+<p><strong>py读取文件</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line">os.listdir(path)//得到path路径下的所在文件的列表</span><br><span class="line">open(path)//打开路径下的文件</span><br><span class="line">os.path.isdir(file)//参数为file判断是否是文件夹</span><br><span class="line">os.path.isfile(file)//判断是否是问价</span><br></pre></td></tr></table></figure></p>
+<p><strong>pd做统计</strong><br><strong>作比较</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/01/12/统计学习/" data-id="cjd35sq8d0004tsj3lghbh0vt" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/统计学习/">统计学习</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/12/13/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/01/12/交换机/p4的编程/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">p4编程</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/p4交换机/">p4交换机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/交换机的使用/">交换机的使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/博客介绍/">博客介绍</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/智能网卡/">智能网卡</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/统计学习/">统计学习</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/p4交换机/" style="font-size: 10px;">p4交换机</a> <a href="/tags/交换机的使用/" style="font-size: 20px;">交换机的使用</a> <a href="/tags/博客介绍/" style="font-size: 10px;">博客介绍</a> <a href="/tags/智能网卡/" style="font-size: 10px;">智能网卡</a> <a href="/tags/算法/" style="font-size: 10px;">算法</a> <a href="/tags/统计学习/" style="font-size: 10px;">统计学习</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/12/29/thrift的入门/">rpc框架thrift入门</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/25/交换机/OvS的使用/">OvS的使用</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/16/发包工具的使用/">发包工具的使用</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/13/hello-world-bin-niu/">hello world bin.niu</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/13/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 BinNiu<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

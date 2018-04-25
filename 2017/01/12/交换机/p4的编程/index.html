@@ -14,7 +14,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/01/12/交换机/p4的编程/index.html">
 <meta property="og:site_name" content="Bin.Niu">
 <meta property="og:description" content="在本篇文章中将讲述p4编程，文章中将结合p4程序的例子介绍p4编程的规则以及流程。p4根据抽象转发模型定义的一门语言，用以表达交换机将如何被配置，数据包将如何被处理  p4编程每一个p4程序都会被分为paser,ingress,egress在parser中可以实现对数据报的解析，在ingress中可以根据定义的table转发数据，在table中需要定义的action完成转发动作，同理在egress">
-<meta property="og:updated_time" content="2018-01-20T09:08:46.425Z">
+<meta property="og:updated_time" content="2018-04-10T09:25:59.093Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="p4编程">
 <meta name="twitter:description" content="在本篇文章中将讲述p4编程，文章中将结合p4程序的例子介绍p4编程的规则以及流程。p4根据抽象转发模型定义的一门语言，用以表达交换机将如何被配置，数据包将如何被处理  p4编程每一个p4程序都会被分为paser,ingress,egress在parser中可以实现对数据报的解析，在ingress中可以根据定义的table转发数据，在table中需要定义的action完成转发动作，同理在egress">
@@ -181,12 +181,12 @@
 <p>说明：<br><code>=&gt;</code>前面是match的匹配参数，后面是action匹配参数<br>比如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">table nat      &#123;</span><br><span class="line">    reads &#123;</span><br><span class="line">        meta.is_ext_if : exact;</span><br><span class="line">        ipv4 : valid;</span><br><span class="line">        tcp : valid;</span><br><span class="line">        ipv4.srcAddr : ternary;//field的匹配方式有五种分别为:</span><br><span class="line">        //</span><br><span class="line">        ipv4.dstAddr : ternary;</span><br><span class="line">        tcp.srcPort : ternary;</span><br><span class="line">        tcp.dstPort : ternary;</span><br><span class="line">    &#125;</span><br><span class="line">    actions &#123;</span><br><span class="line">        _drop;</span><br><span class="line">        nat_miss_int_to_ext;</span><br><span class="line">        nat_miss_ext_to_int;</span><br><span class="line">        nat_hit_int_to_ext;</span><br><span class="line">        nat_hit_ext_to_int;</span><br><span class="line">        nat_no_nat;  // for debugging</span><br><span class="line">    &#125;</span><br><span class="line">    size : 128;</span><br><span class="line">    support_timeout = ture;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>添加如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">table_add nat nat_miss_ext_to_int 1 1 1 0.0.0.0&amp;&amp;&amp;0.0.0.0 0.0.0.0&amp;&amp;&amp;0.0.0.0 0&amp;&amp;&amp;0 0&amp;&amp;&amp;0 =&gt; 99//99代表的是优先级别</span><br><span class="line">table_add nat nat_miss_int_to_ext 0 1 1 0.0.0.0&amp;&amp;&amp;0.0.0.0 0.0.0.0&amp;&amp;&amp;0.0.0.0 0&amp;&amp;&amp;0 0&amp;&amp;&amp;0 =&gt; 99//支持support_timeout = ture;</span><br></pre></td></tr></table></figure></p>
 <p>//TODOmiss为什么如此配置??<br>通过脚本<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table_add nat nat_hit_int_to_ext 0 1 1 %s&amp;&amp;&amp;255.255.255.255 0.0.0.0&amp;&amp;&amp;0.0.0.0 %d&amp;&amp;&amp;0xffff 0&amp;&amp;&amp;0 =&gt; %s %d 1</span><br></pre></td></tr></table></figure></p>
-<p><strong>智能网卡的命令</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">添加流表</span><br><span class="line">sudo python sdk6_rte_cli.py -r 192.168.109.204 -p 20206 tables -t fwd_table  -r fwd1 -m &apos;&#123; &quot;ipv4.dstAddr&quot; : &#123;  &quot;value&quot; : &quot;10.0.0.0/24&quot; &#125; &#125;&apos; -a &apos;&#123;  &quot;type&quot; : &quot;forward_act&quot;,  &quot;data&quot; : &#123; &quot;port&quot; : &#123; &quot;value&quot; : &quot;v0.2&quot; &#125; &#125; &#125;&apos; add</span><br><span class="line">删除流表</span><br><span class="line">sudo python sdk6_rte_cli.py -r 192.168.109.204 -p 20206 tables -t fwd_table  -r fwd1 -m &apos;&#123; &quot;ipv4.dstAddr&quot; : &#123;  &quot;value&quot; : &quot;10.0.0.0/24&quot; &#125; &#125;&apos; -a &apos;&#123;  &quot;type&quot; : &quot;forward_act&quot;,  &quot;data&quot; : &#123; &quot;port&quot; : &#123; &quot;value&quot; : &quot;v0.2&quot; &#125; &#125; &#125;&apos; delete</span><br></pre></td></tr></table></figure></p>
+<p><strong>智能网卡的命令</strong>，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">添加流表</span><br><span class="line">sudo python sdk6_rte_cli.py -r 192.168.109.204 -p 20206 tables -t fwd_table  -r fwd1 -m &apos;&#123; &quot;ipv4.dstAddr&quot; : &#123;  &quot;value&quot; : &quot;10.0.0.0/24&quot; &#125; &#125;&apos; -a &apos;&#123;  &quot;type&quot; : &quot;forward_act&quot;,  &quot;data&quot; : &#123; &quot;port&quot; : &#123; &quot;value&quot; : &quot;v0.2&quot; &#125; &#125; &#125;&apos; add</span><br><span class="line">删除流表</span><br><span class="line">sudo python sdk6_rte_cli.py -r 192.168.109.204 -p 20206 tables -t fwd_table  -r fwd1 -m &apos;&#123; &quot;ipv4.dstAddr&quot; : &#123;  &quot;value&quot; : &quot;10.0.0.0/24&quot; &#125; &#125;&apos; -a &apos;&#123;  &quot;type&quot; : &quot;forward_act&quot;,  &quot;data&quot; : &#123; &quot;port&quot; : &#123; &quot;value&quot; : &quot;v0.2&quot; &#125; &#125; &#125;&apos; delete</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/01/12/交换机/p4的编程/" data-id="cjd35sq8z000etsj3ojillh74" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/01/12/交换机/p4的编程/" data-id="cjd35unmr000hz0j3i9haf57g" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/p4交换机/">p4交换机</a></li></ul>
@@ -247,7 +247,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li></ul>
     </div>
   </div>
 
@@ -258,6 +258,10 @@
     <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/02/05/6.824/mapreduce入门/">(no title)</a>
+          </li>
         
           <li>
             <a href="/2017/12/29/thrift的入门/">rpc框架thrift入门</a>
@@ -273,10 +277,6 @@
         
           <li>
             <a href="/2017/12/13/hello-world-bin-niu/">hello world bin.niu</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/13/hello-world/">Hello World</a>
           </li>
         
       </ul>
